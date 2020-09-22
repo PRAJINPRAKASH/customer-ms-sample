@@ -1,7 +1,7 @@
 package com.techgentsia.ecomexample.customerms.services;
 
 import com.techgentsia.ecomexample.customerms.entity.Customer;
-import com.techgentsia.ecomexample.customerms.exceptions.CustomerNotFoundException;
+import com.techgentsia.ecomexample.customerms.exceptions.ResourceNotFoundException;
 import com.techgentsia.ecomexample.customerms.repositories.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.techgentsia.ecomexample.customerms.constants.MessageConstants.CUSTOMER_NOT_FOUND_ERROR;
 
 @Service
 public class CustomerService implements UserDetailsService {
@@ -29,9 +31,9 @@ public class CustomerService implements UserDetailsService {
     }
 
     public Customer getCustomerById(UUID id)
-            throws CustomerNotFoundException {
+            throws ResourceNotFoundException {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new CustomerNotFoundException(id));
+                .orElseThrow(() -> new ResourceNotFoundException(CUSTOMER_NOT_FOUND_ERROR, id.toString()));
         return customer;
     }
     public Customer getCustomerByEmail(String email) {
@@ -43,7 +45,7 @@ public class CustomerService implements UserDetailsService {
         return customerRepository.save(customer);
     }
 
-    public Customer updateCustomer(UUID id, Customer customerDetails) throws CustomerNotFoundException {
+    public Customer updateCustomer(UUID id, Customer customerDetails) throws ResourceNotFoundException {
 
         customerDetails.setId(getCustomerById(id).getId());
         final Customer updatedCustomer = customerRepository.save(customerDetails);
@@ -60,8 +62,8 @@ public class CustomerService implements UserDetailsService {
         return new User(customer.getEmail(),customer.getPassword(), new ArrayList<>());
     }
 
-    public UserDetails loadUserByUserId(UUID id) throws CustomerNotFoundException {
-        Customer customer = customerRepository.findById(id).orElseThrow(()-> new CustomerNotFoundException(id));
+    public UserDetails loadUserByUserId(UUID id) throws ResourceNotFoundException {
+        Customer customer = customerRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException(CUSTOMER_NOT_FOUND_ERROR, id.toString()));
         return new User(customer.getId().toString(),customer.getPassword(), new ArrayList<>());
     }
 }

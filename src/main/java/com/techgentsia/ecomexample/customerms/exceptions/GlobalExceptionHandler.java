@@ -26,13 +26,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     ResourceBundleMessageSource messageSource;
 
-    @ExceptionHandler(CustomerNotFoundException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(CustomerNotFoundException ex,
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex,
                                                              WebRequest request,
                                                              @RequestHeader("Accept-Language") Locale local) {
         ErrorDetails errorDetails
                 = new ErrorDetails(new Date(),
-                messageSource.getMessage(CUSTOMER_NOT_FOUND_ERROR,null, local) + ex.getMessage(),
+                messageSource.getMessage(ex.getMessage(),null, local) + ex.getId(),
                 request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }

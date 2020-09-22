@@ -14,6 +14,7 @@ import static com.techgentsia.ecomexample.customerms.constants.MessageConstants.
 
 @Entity
 public @Data
+@Table(name = "customers")
 class Customer extends DBTimestamps implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
